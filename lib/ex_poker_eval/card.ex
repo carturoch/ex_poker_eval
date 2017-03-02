@@ -3,6 +3,9 @@ defmodule ExPokerEval.Card do
   Card manipulation functions
   """
 
+  @suits ~w(H D S C)
+  @values ~w(J Q K) ++ [2..10]
+
   @doc """
   Gets an array of cards as a keyword of cards represented by
   value and suit.
@@ -15,8 +18,7 @@ defmodule ExPokerEval.Card do
   ```
   """
   def parse_hand(list) do
-    list
-    |> Enum.map(fn item -> [suit: H, value: 1] end)
+    [parse_card(List.first(list))]
   end
 
   @doc """
@@ -37,7 +39,38 @@ defmodule ExPokerEval.Card do
   {:error, :invalid_card}
   ```
   """
-  def parse_card(str) do
-    
+  def parse_card(bin) do
+    with suit <- String.last(bin),
+        true <- Enum.member?(@suits, suit),
+        literal_value <- String.trim_trailing(bin, suit),
+        value <- sym_to_num(literal_value)
+    do
+      {:ok, [suit: suit, value: value]}
+    else
+      _ -> {:error, :invalid_card}
+    end
+  end
+
+  @doc """
+  Converts symbolic values into numeric ones.
+
+  ## Examples
+  ```
+  iex>ExPokerEval.Card.sym_to_num("2")
+  2
+
+  iex>ExPokerEval.Card.sym_to_num("Q")
+  12
+
+  iex>ExPokerEval.Card.sym_to_num("A")
+  14
+  ```
+  """
+  def sym_to_num("A"), do: 14
+  def sym_to_num("J"), do: 11
+  def sym_to_num("Q"), do: 12
+  def sym_to_num("K"), do: 13
+  def sym_to_num(bin) do
+    Integer.parse(bin)
   end
 end
