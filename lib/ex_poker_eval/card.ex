@@ -14,7 +14,7 @@ defmodule ExPokerEval.Card do
   ```
 
   iex>ExPokerEval.Card.parse_hand(~w(KD))
-  {:ok, [[suit: D, value: 13]]}
+  {:ok, [[suit: "D", value: 13]]}
 
   iex>ExPokerEval.Card.parse_hand(~w(KD 8Z 5H))
   {:error, :invalid_card_in_hand}
@@ -22,6 +22,9 @@ defmodule ExPokerEval.Card do
   # A hand might has a maximum of 5 cards
 
   iex>ExPokerEval.Card.parse_hand(~w(KD 8Z 5H KD 8Z 5H))
+  {:error, :invalid_hand_size}
+
+  iex>ExPokerEval.Card.parse_hand([])
   {:error, :invalid_hand_size}
 
   # Cards can't be repeated
@@ -34,15 +37,18 @@ defmodule ExPokerEval.Card do
 
   ```
   """
+  def parse_hand([]), do: {:error, :invalid_hand_size}
   def parse_hand(larger_hand) when length(larger_hand) > 5, do: {:error, :invalid_hand_size}
   def parse_hand(list) do
     with true <- length(Enum.uniq(list)) == length(list),
-      cards <- Enum.map(list, &parse_card/1)
+      parsed_cards <- Enum.map(list, &parse_card/1),
+      {:invalid_card_in_hand, []} <- {:invalid_card_in_hand, Keyword.get_values(parsed_cards, :error)},
+      cards <- Keyword.get_values(parsed_cards, :ok)
     do
-      {:not_yet, cards}
+      {:ok, cards}
     else
       false -> {:error, :repeated_card}
-      _ -> {:error, :invalid_card_in_hand}
+      {:invalid_card_in_hand, [_]} -> {:error, :invalid_card_in_hand}
     end
   end
 
