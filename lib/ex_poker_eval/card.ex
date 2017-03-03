@@ -19,7 +19,8 @@ defmodule ExPokerEval.Card do
   iex>ExPokerEval.Card.parse_hand(~w(KD 8Z 5H))
   {:error, :invalid_card_in_hand}
 
-  # A hand might has a maximum of 5 cards
+  # A hand might has a maximum of 5 cards and
+  # cannot be empty
 
   iex>ExPokerEval.Card.parse_hand(~w(KD 8Z 5H KD 8Z 5H))
   {:error, :invalid_hand_size}
@@ -42,13 +43,13 @@ defmodule ExPokerEval.Card do
   def parse_hand(list) do
     with true <- length(Enum.uniq(list)) == length(list),
       parsed_cards <- Enum.map(list, &parse_card/1),
-      {:invalid_card_in_hand, []} <- {:invalid_card_in_hand, Keyword.get_values(parsed_cards, :error)},
+      {:invalid_cards, []} <- {:invalid_cards, Keyword.get_values(parsed_cards, :error)},
       cards <- Keyword.get_values(parsed_cards, :ok)
     do
       {:ok, cards}
     else
       false -> {:error, :repeated_card}
-      {:invalid_card_in_hand, [_]} -> {:error, :invalid_card_in_hand}
+      {:invalid_cards, [_]} -> {:error, :invalid_card_in_hand}
     end
   end
 
