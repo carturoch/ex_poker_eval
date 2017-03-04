@@ -9,7 +9,6 @@ defmodule ExPokerEval.Rank do
   def get_straight(hand) do
     cards = hand
     |> Enum.map(&(&1[:value]))
-    |> Enum.sort
     |> ace_as_one
 
     with lower <- cards |> List.first,
@@ -28,6 +27,22 @@ defmodule ExPokerEval.Rank do
   to complete a lower straight.
   """
   def ace_as_one([2,3,4,5,14]), do: [1,2,3,4,5]
+  def ace_as_one([14,2,3,4,5]), do: [1,2,3,4,5]
   def ace_as_one(values), do: values
+
+  @doc """
+  Gets a flush, if present, with the higest value on it
+  """
+  def get_flush(hand) do
+    distinct_suits = hand
+    |> Enum.map(&(&1[:suit]))
+    |> Enum.uniq
+    |> length
+
+    case distinct_suits do
+      1 -> {:flush, List.last(hand)[:value]}
+      _ -> {}
+    end
+  end
 
 end

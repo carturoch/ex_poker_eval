@@ -53,4 +53,31 @@ defmodule ExPokerEval.RankTest do
       assert Rank.get_straight(@straight_lower_cards) == {:straight, 5}
     end
   end
+
+  describe "get_flush" do
+    test "returns empty if not found" do
+      hand = [
+        [suit: "D", value: 2],
+        [suit: "D", value: 3],
+        [suit: "C", value: 4],
+        [suit: "D", value: 5],
+        [suit: "D", value: 6]
+      ]
+
+      assert Rank.get_flush(hand) == {}
+    end
+
+    test "detects the flush and the higest value" do
+      hand = [
+        [suit: "D", value: 2],
+        [suit: "D", value: 3],
+        [suit: "D", value: 4],
+        [suit: "D", value: 5],
+        [suit: "D", value: 12]
+      ]
+
+      assert Rank.get_flush(hand) == {:flush, 12}
+    end
+  end
+
 end
