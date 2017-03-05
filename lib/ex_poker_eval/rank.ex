@@ -45,4 +45,8 @@ defmodule ExPokerEval.Rank do
     end
   end
 
+  def get_pair(hand) do
+    {}
+  end
+
 end

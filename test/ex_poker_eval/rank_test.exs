@@ -80,4 +80,29 @@ defmodule ExPokerEval.RankTest do
     end
   end
 
+  describe "get_pair" do
+    test "return empty if not found" do
+      hand = [
+        [suit: "D", value: 2],
+        [suit: "S", value: 3],
+        [suit: "C", value: 5],
+        [suit: "D", value: 8],
+        [suit: "H", value: 11]
+      ]
+
+      assert Rank.get_pair(hand) == {}
+    end
+
+    test "get a pair from the hand" do
+      hand = [
+        [suit: "D", value: 2],
+        [suit: "S", value: 3],
+        [suit: "C", value: 5],
+        [suit: "D", value: 5],
+        [suit: "H", value: 11]
+      ]
+
+      assert Rank.get_pair(hand) == {:pair, 5}
+    end
+  end
 end
