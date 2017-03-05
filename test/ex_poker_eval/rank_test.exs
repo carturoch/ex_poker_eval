@@ -105,4 +105,42 @@ defmodule ExPokerEval.RankTest do
       assert Rank.get_pair(hand) == {:pair, 5}
     end
   end
+
+  describe "group_by" do
+    test "grouping by value" do
+      cards = [
+        [suit: "D", value: 3],
+        [suit: "S", value: 3],
+        [suit: "C", value: 5],
+        [suit: "D", value: 5],
+        [suit: "H", value: 11]
+      ]
+
+      assert Rank.group_by(cards, :value) == %{3 => 2, 5 => 2, 11 => 1}
+    end
+
+    test "groups more than 2" do
+      cards = [
+        [suit: "D", value: 3],
+        [suit: "S", value: 3],
+        [suit: "C", value: 3],
+        [suit: "H", value: 3],
+        [suit: "H", value: 13]
+      ]
+
+      assert Rank.group_by(cards, :value) == %{3 => 4, 13 => 1}
+    end
+
+    test "grouping by suit" do
+      cards = [
+        [suit: "D", value: 3],
+        [suit: "S", value: 3],
+        [suit: "C", value: 5],
+        [suit: "D", value: 5],
+        [suit: "H", value: 11]
+      ]
+
+      assert Rank.group_by(cards, :suit) == %{"C" => 1, "D" => 2, "H" => 1, "S" => 1}
+    end
+  end
 end
