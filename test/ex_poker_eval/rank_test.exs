@@ -104,6 +104,18 @@ defmodule ExPokerEval.RankTest do
 
       assert Rank.get_pair(hand) == {:pair, 5}
     end
+
+    test "get the highest pair from the hand" do
+      hand = [
+        [suit: "D", value: 3],
+        [suit: "S", value: 3],
+        [suit: "C", value: 5],
+        [suit: "D", value: 5],
+        [suit: "H", value: 11]
+      ]
+
+      assert Rank.get_pair(hand) == {:pair, 5}
+    end
   end
 
   describe "group_by" do
