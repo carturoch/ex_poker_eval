@@ -68,7 +68,35 @@ defmodule ExPokerEval.Rank do
 
     case pairs do
       [] -> {}
-      _ -> {:pair, pairs |> List.last |> Tuple.to_list |> List.first } 
+      _ -> {:pair, pairs |> List.last |> Tuple.to_list |> List.first }
+    end
+  end
+
+  @doc """
+  Gets the value of four_of_a_kind rank if present
+  """
+  def get_four_of_a_kind(cards) do
+    {value, 4} = cards
+    |> group_by(:value)
+    |> Enum.find({0, 4}, fn {_value, hits} -> hits == 4 end)
+
+    case value do
+      0 -> {}
+      _ -> {:four_of_a_kind, value }
+    end
+  end
+
+  @doc """
+  Gets the value of three_of_a rank if present
+  """
+  def get_three_of_a_kind(cards) do
+    {value, _hits} = cards
+    |> group_by(:value)
+    |> Enum.find({0, 3}, fn {_value, hits} -> hits >= 3 end)
+
+    case value do
+      0 -> {}
+      _ -> {:three_of_a_kind, value }
     end
   end
 

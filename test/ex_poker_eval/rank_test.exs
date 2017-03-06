@@ -155,4 +155,68 @@ defmodule ExPokerEval.RankTest do
       assert Rank.group_by(cards, :suit) == %{"C" => 1, "D" => 2, "H" => 1, "S" => 1}
     end
   end
+
+  describe "get_four_of_a_kind" do
+    test "returns empty if not found" do
+      cards = [
+        [suit: "D", value: 2],
+        [suit: "S", value: 3],
+        [suit: "C", value: 3],
+        [suit: "D", value: 3],
+        [suit: "H", value: 6]
+      ]
+
+      assert Rank.get_four_of_a_kind(cards) == {}
+    end
+
+    test "gets the rank and the value of the cards" do
+      cards = [
+        [suit: "H", value: 3],
+        [suit: "S", value: 3],
+        [suit: "C", value: 3],
+        [suit: "D", value: 3],
+        [suit: "H", value: 6]
+      ]
+
+      assert Rank.get_four_of_a_kind(cards) == {:four_of_a_kind, 3}
+    end
+  end
+
+  describe "get_three_of_a_kind" do
+    test "returns empty if not found" do
+      cards = [
+        [suit: "D", value: 2],
+        [suit: "S", value: 3],
+        [suit: "C", value: 3],
+        [suit: "D", value: 7],
+        [suit: "H", value: 9]
+      ]
+
+      assert Rank.get_three_of_a_kind(cards) == {}
+    end
+
+    test "gets the three_of_a_kind when three values match" do
+      cards = [
+        [suit: "D", value: 2],
+        [suit: "S", value: 3],
+        [suit: "C", value: 3],
+        [suit: "D", value: 3],
+        [suit: "H", value: 6]
+      ]
+
+      assert Rank.get_three_of_a_kind(cards) == {:three_of_a_kind, 3}
+    end
+
+    test "gets the rank and the value of the cards" do
+      cards = [
+        [suit: "H", value: 4],
+        [suit: "S", value: 4],
+        [suit: "C", value: 4],
+        [suit: "D", value: 4],
+        [suit: "H", value: 6]
+      ]
+
+      assert Rank.get_three_of_a_kind(cards) == {:three_of_a_kind, 4}
+    end
+  end
 end
