@@ -257,4 +257,54 @@ defmodule ExPokerEval.RankTest do
       assert Rank.get_two_pairs(cards) == {:two_pairs, 3}
     end
   end
+
+  describe "straight_flush" do
+    test "returns empty if not found" do
+      cards = [
+        [suit: "D", value: 2],
+        [suit: "S", value: 3],
+        [suit: "C", value: 3],
+        [suit: "D", value: 7],
+        [suit: "H", value: 9]
+      ]
+
+      assert Rank.get_straight_flush(cards) == {}
+    end
+
+    test "gets a straight flush with the highest card" do
+      cards = [
+        [suit: "D", value: 2],
+        [suit: "D", value: 3],
+        [suit: "D", value: 4],
+        [suit: "D", value: 5],
+        [suit: "D", value: 6]
+      ]
+
+      assert Rank.get_straight_flush(cards) == {:straight_flush, 6}
+    end
+
+    test "a flush is not recognized" do
+      cards = [
+        [suit: "D", value: 2],
+        [suit: "D", value: 3],
+        [suit: "D", value: 4],
+        [suit: "D", value: 5],
+        [suit: "D", value: 8]
+      ]
+
+      assert Rank.get_straight_flush(cards) == {}
+    end
+
+    test "a straight is not recognized" do
+      cards = [
+        [suit: "D", value: 2],
+        [suit: "D", value: 3],
+        [suit: "D", value: 4],
+        [suit: "D", value: 5],
+        [suit: "H", value: 6]
+      ]
+
+      assert Rank.get_straight_flush(cards) == {}
+    end
+  end
 end

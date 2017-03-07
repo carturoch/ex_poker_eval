@@ -57,6 +57,19 @@ defmodule ExPokerEval.Rank do
   end
 
   @doc """
+  Gets a straight flush with the highest card's value
+  """
+  def get_straight_flush(cards) do
+    with {:straight, value} <- get_straight(cards),
+      {:flush, ^value} <- get_flush(cards)
+    do
+      {:straight_flush, value}
+    else
+      _ -> {}
+    end
+  end
+
+  @doc """
   Gets a pair from a set of cards.
   If more than one is present the returned value will contain
   the highest one by value.
