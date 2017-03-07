@@ -232,5 +232,29 @@ defmodule ExPokerEval.RankTest do
 
       assert Rank.get_two_pairs(cards) == {}
     end
+
+    test "gets the two pairs" do
+      cards = [
+        [suit: "D", value: 2],
+        [suit: "S", value: 2],
+        [suit: "C", value: 3],
+        [suit: "D", value: 3],
+        [suit: "H", value: 6]
+      ]
+
+      assert Rank.get_two_pairs(cards) == {:two_pairs, 3}
+    end
+
+    test "gets the two pairs even if is a full house" do
+      cards = [
+        [suit: "D", value: 2],
+        [suit: "S", value: 2],
+        [suit: "C", value: 3],
+        [suit: "D", value: 3],
+        [suit: "H", value: 3]
+      ]
+
+      assert Rank.get_two_pairs(cards) == {:two_pairs, 3}
+    end
   end
 end

@@ -73,17 +73,19 @@ defmodule ExPokerEval.Rank do
   end
 
   @doc """
-  Gets two pairs from a set of cards.
-  It considers each pair to be of different value.
+  Gets two pairs from a set of cards and returns the highest value.
+  Each pair is expected to be of different value.
   """
-  def get_pair(cards) do
+  def get_two_pairs(cards) do
     pairs = cards
     |> group_by(:value)
     |> Enum.filter(fn {_value, hits} -> hits > 1 end)
 
-    case pairs do
-      [] -> {}
-      _ -> {:pair, pairs |> List.last |> Tuple.to_list |> List.first }
+    cond do
+      length(pairs) > 1 ->
+        {:two_pairs, pairs |> List.last |> Tuple.to_list |> List.first }
+      true ->
+        {}
     end
   end
 
