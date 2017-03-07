@@ -131,6 +131,21 @@ defmodule ExPokerEval.Rank do
   end
 
   @doc """
+  Gets a full house if present with the highest card value
+  """
+  def get_full_house(cards) do
+    with groups <- cards |> group_by(:value),
+      hits <- Map.values(groups),
+      [2, 3] <- Enum.sort(hits)
+    do
+      highest_value = groups |> Map.keys |> List.last
+      {:full_house, highest_value}
+    else
+      _ -> {}
+    end
+  end
+
+  @doc """
   Helper to group cards by the given field
   """
   def group_by(cards, field) do

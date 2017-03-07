@@ -271,18 +271,6 @@ defmodule ExPokerEval.RankTest do
       assert Rank.get_straight_flush(cards) == {}
     end
 
-    test "gets a straight flush with the highest card" do
-      cards = [
-        [suit: "D", value: 2],
-        [suit: "D", value: 3],
-        [suit: "D", value: 4],
-        [suit: "D", value: 5],
-        [suit: "D", value: 6]
-      ]
-
-      assert Rank.get_straight_flush(cards) == {:straight_flush, 6}
-    end
-
     test "a flush is not recognized" do
       cards = [
         [suit: "D", value: 2],
@@ -295,7 +283,7 @@ defmodule ExPokerEval.RankTest do
       assert Rank.get_straight_flush(cards) == {}
     end
 
-    test "a straight is not recognized" do
+    test "an straight is not recognized" do
       cards = [
         [suit: "D", value: 2],
         [suit: "D", value: 3],
@@ -305,6 +293,83 @@ defmodule ExPokerEval.RankTest do
       ]
 
       assert Rank.get_straight_flush(cards) == {}
+    end
+
+    test "an straight flush with the highest card is found" do
+      cards = [
+        [suit: "D", value: 2],
+        [suit: "D", value: 3],
+        [suit: "D", value: 4],
+        [suit: "D", value: 5],
+        [suit: "D", value: 6]
+      ]
+
+      assert Rank.get_straight_flush(cards) == {:straight_flush, 6}
+    end
+  end
+
+  describe "get_full_house" do
+    test "returns empty if not found" do
+      cards = [
+        [suit: "D", value: 2],
+        [suit: "S", value: 3],
+        [suit: "C", value: 3],
+        [suit: "D", value: 7],
+        [suit: "H", value: 9]
+      ]
+
+      assert Rank.get_full_house(cards) == {}
+    end
+
+    test "other groups are not recognized" do
+      pair_cards = [
+        [suit: "D", value: 2],
+        [suit: "S", value: 3],
+        [suit: "C", value: 3],
+        [suit: "D", value: 7],
+        [suit: "H", value: 9]
+      ]
+
+      two_pair_cards = [
+        [suit: "D", value: 2],
+        [suit: "S", value: 3],
+        [suit: "C", value: 3],
+        [suit: "D", value: 9],
+        [suit: "H", value: 9]
+      ]
+
+      three_of_a_kind_cards = [
+        [suit: "D", value: 3],
+        [suit: "S", value: 3],
+        [suit: "C", value: 3],
+        [suit: "D", value: 9],
+        [suit: "H", value: 12]
+      ]
+
+      four_of_a_kind_cards = [
+        [suit: "D", value: 3],
+        [suit: "S", value: 3],
+        [suit: "C", value: 3],
+        [suit: "H", value: 3],
+        [suit: "H", value: 9]
+      ]
+
+      assert Rank.get_full_house(pair_cards) == {}
+      assert Rank.get_full_house(two_pair_cards) == {}
+      assert Rank.get_full_house(three_of_a_kind_cards) == {}
+      assert Rank.get_full_house(four_of_a_kind_cards) == {}
+    end
+
+    test "gets the full house with the highest card value" do
+      cards = [
+        [suit: "D", value: 3],
+        [suit: "S", value: 3],
+        [suit: "C", value: 3],
+        [suit: "D", value: 9],
+        [suit: "H", value: 9]
+      ]
+
+      assert Rank.get_full_house(cards) == {:full_house, 9}
     end
   end
 end
