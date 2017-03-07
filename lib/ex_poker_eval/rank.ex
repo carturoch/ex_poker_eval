@@ -73,6 +73,21 @@ defmodule ExPokerEval.Rank do
   end
 
   @doc """
+  Gets two pairs from a set of cards.
+  It considers each pair to be of different value.
+  """
+  def get_pair(cards) do
+    pairs = cards
+    |> group_by(:value)
+    |> Enum.filter(fn {_value, hits} -> hits > 1 end)
+
+    case pairs do
+      [] -> {}
+      _ -> {:pair, pairs |> List.last |> Tuple.to_list |> List.first }
+    end
+  end
+
+  @doc """
   Gets the value of four_of_a_kind rank if present
   """
   def get_four_of_a_kind(cards) do

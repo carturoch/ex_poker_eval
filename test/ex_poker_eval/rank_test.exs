@@ -219,4 +219,18 @@ defmodule ExPokerEval.RankTest do
       assert Rank.get_three_of_a_kind(cards) == {:three_of_a_kind, 4}
     end
   end
+
+  describe "get_two_pairs" do
+    test "returns empty if not found" do
+      cards = [
+        [suit: "D", value: 2],
+        [suit: "S", value: 3],
+        [suit: "C", value: 3],
+        [suit: "D", value: 7],
+        [suit: "H", value: 9]
+      ]
+
+      assert Rank.get_two_pairs(cards) == {}
+    end
+  end
 end
