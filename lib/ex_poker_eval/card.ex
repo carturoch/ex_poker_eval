@@ -4,7 +4,6 @@ defmodule ExPokerEval.Card do
   """
 
   @suits ~w(H D S C)
-  @values ~w(J Q K) ++ [2..10]
 
   @doc """
   Gets an array of cards as a keyword of cards represented by

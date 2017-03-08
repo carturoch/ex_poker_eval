@@ -372,4 +372,10 @@ defmodule ExPokerEval.RankTest do
       assert Rank.get_full_house(cards) == {:full_house, 9}
     end
   end
+
+  describe "highest" do
+    test "" do
+
+    end
+  end
 end

@@ -4,6 +4,28 @@ defmodule ExPokerEval.Rank do
   """
 
   @doc """
+  Gets the ranking order of categories.
+
+  ## Example
+  ```
+  iex>ExPokerEval.Rank.order
+  ["straight_flush", "four_of_a_kind", "full_house", "flush", "straight", "three_of_a_kind", "two_pairs", "pair"]
+  ```
+  """
+  def order do
+    ~w(
+      straight_flush
+      four_of_a_kind
+      full_house
+      flush
+      straight
+      three_of_a_kind
+      two_pairs
+      pair
+    )
+  end
+
+  @doc """
   Gets a straight if found
   """
   def get_straight(cards) do

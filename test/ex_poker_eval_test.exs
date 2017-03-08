@@ -2,7 +2,9 @@ defmodule ExPokerEvalTest do
   use ExUnit.Case
   doctest ExPokerEval
 
-  test "the truth" do
-    assert 1 + 1 == 2
+  # import ExPokerEval
+
+  describe "get_highest" do
+
   end
 end
