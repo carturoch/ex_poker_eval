@@ -372,4 +372,28 @@ defmodule ExPokerEval.RankTest do
       assert Rank.get_full_house(cards) == {:full_house, 9}
     end
   end
+
+  @poly_cards [
+    [suit: "D", value: 3],
+    [suit: "S", value: 3],
+    [suit: "C", value: 3],
+    [suit: "D", value: 8],
+    [suit: "H", value: 8]
+  ]
+
+  describe "highest" do
+    test "empty for invalid offset" do
+      assert Rank.highest(@poly_cards, :other) == {:error, :invalid_offset}
+    end
+
+    test "a full house is detected" do
+      assert Rank.highest(@poly_cards, :top) == {:full_house, 8}
+    end
+
+    test "the offset finds lower ranks" do
+      assert Rank.highest(@poly_cards, :full_house) == {:three_of_a_kind, 3}
+      assert Rank.highest(@poly_cards, :three_of_a_kind) == {:two_pairs, 8}
+      assert Rank.highest(@poly_cards, :two_pairs) == {:pair, 8}
+    end
+  end
 end

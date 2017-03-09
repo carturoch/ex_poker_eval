@@ -3,6 +3,44 @@ defmodule ExPokerEval.Rank do
   Ranking functions for poker cards
   """
 
+  # Order of ranks
+  @order ~w(
+      straight_flush
+      four_of_a_kind
+      full_house
+      flush
+      straight
+      three_of_a_kind
+      two_pairs
+      pair
+    )a
+
+  @doc """
+  Using @order finds the highest rank of the given cards
+
+  ## Examples
+  ```
+  iex>ExPokerEval.Rank.highest([], :top)
+  {}
+
+  iex>ExPokerEval.Rank.highest({:invalid}, :top)
+  {}
+
+  ```
+  """
+  def highest(cards, :top), do: highest(cards, List.first(@order))
+  def highest(invalid, _offset) when not is_list(invalid), do: {}
+  def highest([], _offset), do: {}
+  def highest(cards, offset) when offset in @order do
+    with offset_idx <- @order |> Enum.find_index(&(&1 == offset)),
+      do
+        rank
+      else
+        _ -> {}
+      end
+  end
+  def highest(_cards, _other_offset), do: {:error, :invalid_offset}
+
   @doc """
   Gets a straight if found
   """
