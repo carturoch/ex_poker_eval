@@ -373,6 +373,20 @@ defmodule ExPokerEval.RankTest do
     end
   end
 
+  describe "get_high_card" do
+    test "gets the highest valued card" do
+      cards = [
+        [suit: "D", value: 2],
+        [suit: "C", value: 3],
+        [suit: "S", value: 8],
+        [suit: "H", value: 9],
+        [suit: "D", value: 11]
+      ]
+
+      assert Rank.get_high_card(cards) == {:high_card, 11}
+    end
+  end
+
   @poly_cards [
     [suit: "D", value: 3],
     [suit: "S", value: 3],
@@ -382,18 +396,40 @@ defmodule ExPokerEval.RankTest do
   ]
 
   describe "highest" do
-    test "empty for invalid offset" do
-      assert Rank.highest(@poly_cards, :other) == {:error, :invalid_offset}
+    test "error when invalid offset" do
+      assert Rank.highest(@poly_cards, -1) == {:error, :invalid_offset}
+      assert Rank.highest(@poly_cards, 10) == {:error, :invalid_offset}
     end
 
-    test "a full house is detected" do
-      assert Rank.highest(@poly_cards, :top) == {:full_house, 8}
+    test "detects the highest rank" do
+      cards = [
+        [suit: "D", value: 2],
+        [suit: "D", value: 3],
+        [suit: "D", value: 4],
+        [suit: "D", value: 5],
+        [suit: "D", value: 6]
+      ]
+
+      assert Rank.highest(cards) == {:straight_flush, 6}
     end
 
-    test "the offset finds lower ranks" do
-      assert Rank.highest(@poly_cards, :full_house) == {:three_of_a_kind, 3}
-      assert Rank.highest(@poly_cards, :three_of_a_kind) == {:two_pairs, 8}
-      assert Rank.highest(@poly_cards, :two_pairs) == {:pair, 8}
+    test "detects the highest after first rank" do
+      assert Rank.highest(@poly_cards) == {:full_house, 8}
+    end
+
+    test "allows custom offset" do
+      assert Rank.highest(@poly_cards, 3) == {:three_of_a_kind, 3}
+    end
+
+    test "gets highest card when no rank is found" do
+      cards = [
+        [suit: "D", value: 2],
+        [suit: "C", value: 3],
+        [suit: "S", value: 8],
+        [suit: "H", value: 9],
+        [suit: "D", value: 12]
+      ]
+      assert Rank.highest(cards) == {:high_card, 12}
     end
   end
 end
