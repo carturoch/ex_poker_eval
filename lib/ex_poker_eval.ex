@@ -35,7 +35,26 @@ defmodule ExPokerEval do
       b_idx > w_idx -> {:white, w_rank, w_value}
       b_value > w_value -> {:black, b_rank, b_value}
       b_value < w_value -> {:white, w_rank, w_value}
+      b_rank == :high_card -> compare_high_cards(b_cards, w_cards)
       true -> compare(b_cards, w_cards, offset + 1)
+    end
+  end
+
+  @doc """
+  Compares two sets of cards just by their higest cards
+  """
+  def compare_high_cards(b_cards, w_cards) do
+    b_values = b_cards |> Enum.map(&(&1[:value])) |> Enum.reverse
+    w_values = w_cards |> Enum.map(&(&1[:value])) |> Enum.reverse
+
+    distinct_pair = Enum.zip(b_values, w_values)
+    |> Enum.reject(fn {b, w} -> b == w end)
+    |> List.first
+
+    case distinct_pair do
+      {b, w} when b > w -> {:black, :high_card, b}
+      {b, w} when b < w -> {:white, :high_card, w}
+      _ -> :tie
     end
   end
 end

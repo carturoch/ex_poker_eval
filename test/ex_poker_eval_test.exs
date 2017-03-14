@@ -49,6 +49,24 @@ defmodule ExPokerEvalTest do
 
       assert get_highest(hands) == {:white, :high_card, 14}
     end
+
+    test "when next rank is :high_card and values are the same use the next highest value" do
+      hands = [
+        black: ~w(2H 2C 2S 5H AS),
+        white: ~w(2H 2C 2S 3S AC)
+      ]
+
+      assert get_highest(hands) == {:black, :high_card, 5}
+    end
+
+    test "get :tie when high cards are equal" do
+      hands = [
+        black: ~w(2H 2C 2S 5H AS),
+        white: ~w(2H 2C 2S 5S AC)
+      ]
+
+      assert get_highest(hands) == :tie
+    end
   end
 
   describe "compare" do
@@ -70,6 +88,48 @@ defmodule ExPokerEvalTest do
       ]
 
       assert compare(b, w) == {:white, :pair, 14}
+    end
+  end
+
+  describe "compare_high_cards" do
+    test "gets the highest distinct card" do
+      b = [
+        [suit: "H", value: 2],
+        [suit: "D", value: 3],
+        [suit: "S", value: 5],
+        [suit: "C", value: 9],
+        [suit: "D", value: 13]
+      ]
+
+      w = [
+        [suit: "C", value: 2],
+        [suit: "H", value: 3],
+        [suit: "S", value: 4],
+        [suit: "C", value: 9],
+        [suit: "H", value: 13]
+      ]
+
+      assert compare(b, w) == {:black, :high_card, 5}
+    end
+
+    test "detect :tie when there is no higher" do
+      b = [
+        [suit: "H", value: 2],
+        [suit: "D", value: 3],
+        [suit: "S", value: 5],
+        [suit: "C", value: 9],
+        [suit: "D", value: 13]
+      ]
+
+      w = [
+        [suit: "C", value: 2],
+        [suit: "H", value: 3],
+        [suit: "S", value: 5],
+        [suit: "C", value: 9],
+        [suit: "H", value: 13]
+      ]
+
+      assert compare(b, w) == :tie
     end
   end
 end
