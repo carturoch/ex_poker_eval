@@ -35,6 +35,9 @@ defmodule ExPokerEval.Card do
   iex>ExPokerEval.Card.parse_hand(~w(2H 3D 5S 9C KD))
   {:ok, [[suit: "H", value: 2], [suit: "D", value: 3], [suit: "S", value: 5], [suit: "C", value: 9], [suit: "D", value: 13]]}
 
+  iex>ExPokerEval.Card.parse_hand(~w(2♠ 3♦))
+  {:ok, [[suit: "S", value: 2], [suit: "D", value: 3]]}
+
   ```
   """
   def parse_hand([]), do: {:error, :invalid_hand_size}
@@ -71,9 +74,9 @@ defmodule ExPokerEval.Card do
   ```
   """
   def parse_card(bin) do
-    with suit <- String.last(bin),
-        true <- Enum.member?(@suits, suit),
-        literal_value <- String.trim_trailing(bin, suit),
+    with literal_suit <- String.last(bin),
+        {:ok, suit} <- parse_suit(literal_suit),
+        literal_value <- String.trim_trailing(bin, literal_suit),
         value <- sym_to_num(literal_value)
     do
       {:ok, [suit: suit, value: value]}
@@ -118,4 +121,34 @@ defmodule ExPokerEval.Card do
     end
   end
 
+  @doc """
+  Parses the suit from the card. Supports UTF-8 chars
+
+  ## Examples
+  ```
+  iex>ExPokerEval.Card.parse_suit("F")
+  {:error, :invalid_suit}
+
+  iex>ExPokerEval.Card.parse_suit("S")
+  {:ok, "S"}
+
+  iex>ExPokerEval.Card.parse_suit("♠")
+  {:ok, "S"}
+
+  iex>ExPokerEval.Card.parse_suit("♥")
+  {:ok, "H"}
+
+  iex>ExPokerEval.Card.parse_suit("♦")
+  {:ok, "D"}
+
+  iex>ExPokerEval.Card.parse_suit("♣")
+  {:ok, "C"}
+  ```
+  """
+  def parse_suit(bin) when bin in @suits, do: {:ok, String.upcase(bin)}
+  def parse_suit("♠"), do: {:ok, "S"}
+  def parse_suit("♥"), do: {:ok, "H"}
+  def parse_suit("♣"), do: {:ok, "C"}
+  def parse_suit("♦"), do: {:ok, "D"}
+  def parse_suit(_wrong_suite), do: {:error, :invalid_suit}
 end

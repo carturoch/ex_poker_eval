@@ -67,6 +67,15 @@ defmodule ExPokerEvalTest do
 
       assert get_highest(hands) == :tie
     end
+
+    test "support for utf8" do
+      hands = [
+        black: ~w(2♥ 2♠ 2♣ 8♥ A♣),
+        white: ~w(2♥ 2♠ 2♣ 3♣ A♠)
+      ]
+
+      assert get_highest(hands) == {:black, :high_card, 8}
+    end
   end
 
   describe "compare" do

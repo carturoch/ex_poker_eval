@@ -20,3 +20,5 @@ ExPokerEval.get_higher(
 # Output: {:tie}
 
 ```
+
+_Supports ♥♠♦♣ for suits_
