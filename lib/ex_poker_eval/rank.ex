@@ -13,6 +13,7 @@ defmodule ExPokerEval.Rank do
       three_of_a_kind
       two_pairs
       pair
+      high_card
     )a
 
   @doc """
@@ -20,26 +21,26 @@ defmodule ExPokerEval.Rank do
 
   ## Examples
   ```
-  iex>ExPokerEval.Rank.highest([], :top)
-  {}
-
-  iex>ExPokerEval.Rank.highest({:invalid}, :top)
+  iex>ExPokerEval.Rank.highest([])
   {}
 
   ```
   """
-  def highest(cards, :top), do: highest(cards, List.first(@order))
-  def highest(invalid, _offset) when not is_list(invalid), do: {}
-  def highest([], _offset), do: {}
-  def highest(cards, offset) when offset in @order do
-    with offset_idx <- @order |> Enum.find_index(&(&1 == offset)),
-      do
-        rank
-      else
-        _ -> {}
-      end
+  def highest([]), do: {}
+  def highest(cards), do: highest(cards, 0)
+  def highest(_cards, invalid_offset) when invalid_offset < 0 or invalid_offset >= length(@order) do
+    {:error, :invalid_offset}
   end
-  def highest(_cards, _other_offset), do: {:error, :invalid_offset}
+  def highest(cards, offset) do
+    ranks = @order |> Enum.slice(offset, length(@order))
+    Enum.find_value(ranks, {}, fn rank_name ->
+      rank_func = "get_#{rank_name}" |> String.to_atom
+      case apply(ExPokerEval.Rank, rank_func, [cards]) do
+        {rank_name, value} -> {Enum.find_index(@order, &(&1 == rank_name)), rank_name, value}
+        _ -> false
+      end
+    end)
+  end
 
   @doc """
   Gets a straight if found
@@ -181,6 +182,14 @@ defmodule ExPokerEval.Rank do
     else
       _ -> {}
     end
+  end
+
+  @doc """
+  Gets the :high_card of the hand
+  """
+  def get_high_card(cards) do
+    value = cards |> List.last |> Keyword.get(:value)
+    {:high_card, value}
   end
 
   @doc """
