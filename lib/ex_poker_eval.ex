@@ -14,7 +14,7 @@ defmodule ExPokerEval do
       {:ok, w_cards} <- Card.parse_hand(w_hand),
       comparison <- compare(b_cards, w_cards)
       do
-        comparison
+        comparison |> decorate_result
       else
         {:error, msg} -> {:error, msg}
         _ -> {:error, :other}
@@ -57,4 +57,19 @@ defmodule ExPokerEval do
       _ -> :tie
     end
   end
+
+  @doc """
+  Processes the result to use symbolic values instead of numeric unless is a tie.
+
+  ## Examples
+  ```
+  iex>ExPokerEval.decorate_result(:tie)
+  :tie
+
+  iex>ExPokerEval.decorate_result({:white, :flush, 14})
+  {:white, :flush, "Ace"}
+  ```
+  """
+  def decorate_result(:tie), do: :tie
+  def decorate_result({winer, rank, value}), do: {winer, rank, Card.num_to_sym(value)}
 end

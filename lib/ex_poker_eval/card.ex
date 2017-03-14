@@ -100,13 +100,13 @@ defmodule ExPokerEval.Card do
   14
 
   iex>ExPokerEval.Card.sym_to_num("89")
-  :error
+  {:error, :invalid_card_value}
 
   iex>ExPokerEval.Card.sym_to_num("7.6")
-  :error
+  {:error, :invalid_card_value}
 
   iex>ExPokerEval.Card.sym_to_num("")
-  :error
+  {:error, :invalid_card_value}
   ```
   """
   def sym_to_num("1"), do: 14
@@ -117,9 +117,43 @@ defmodule ExPokerEval.Card do
   def sym_to_num(bin) do
     case Integer.parse(bin) do
       {num, ""} when num in 2..14 -> num
-      _ -> :error
+      _ -> {:error, :invalid_card_value}
     end
   end
+
+  @doc """
+  Converts cards values into their symbol
+
+  ## Examples
+  ```
+  iex>ExPokerEval.Card.num_to_sym(4)
+  4
+
+  iex>ExPokerEval.Card.num_to_sym(14)
+  "Ace"
+
+  iex>ExPokerEval.Card.num_to_sym(1)
+  "Ace"
+
+  iex>ExPokerEval.Card.num_to_sym(11)
+  "Jack"
+
+  iex>ExPokerEval.Card.num_to_sym(12)
+  "Queen"
+
+  iex>ExPokerEval.Card.num_to_sym(13)
+  "King"
+
+  iex>ExPokerEval.Card.num_to_sym(23)
+  {:error, :invalid_card_value}
+  ```
+  """
+  def num_to_sym(invalid_value) when not invalid_value in 1..14, do: {:error, :invalid_card_value}
+  def num_to_sym(ace) when ace == 1 or ace == 14, do: "Ace"
+  def num_to_sym(11), do: "Jack"
+  def num_to_sym(12), do: "Queen"
+  def num_to_sym(13), do: "King"
+  def num_to_sym(num), do: num
 
   @doc """
   Parses the suit from the card. Supports UTF-8 chars

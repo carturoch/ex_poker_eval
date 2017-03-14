@@ -38,7 +38,7 @@ defmodule ExPokerEvalTest do
         white: ~w(2H 2C 2S 5S 5C)
       ]
 
-      assert get_highest(hands) == {:black, :full_house, 11}
+      assert get_highest(hands) == {:black, :full_house, "Jack"}
     end
 
     test "recursively finds the next rank" do
@@ -47,7 +47,7 @@ defmodule ExPokerEvalTest do
         white: ~w(2H 2C 2S 3S AC)
       ]
 
-      assert get_highest(hands) == {:white, :high_card, 14}
+      assert get_highest(hands) == {:white, :high_card, "Ace"}
     end
 
     test "when next rank is :high_card and values are the same use the next highest value" do
