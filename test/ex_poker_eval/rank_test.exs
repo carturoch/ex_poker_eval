@@ -410,15 +410,15 @@ defmodule ExPokerEval.RankTest do
         [suit: "D", value: 6]
       ]
 
-      assert Rank.highest(cards) == {:straight_flush, 6}
+      assert Rank.highest(cards) == {0, :straight_flush, 6}
     end
 
     test "detects the highest after first rank" do
-      assert Rank.highest(@poly_cards) == {:full_house, 8}
+      assert Rank.highest(@poly_cards) == {2, :full_house, 8}
     end
 
     test "allows custom offset" do
-      assert Rank.highest(@poly_cards, 3) == {:three_of_a_kind, 3}
+      assert Rank.highest(@poly_cards, 3) == {5, :three_of_a_kind, 3}
     end
 
     test "gets highest card when no rank is found" do
@@ -429,7 +429,7 @@ defmodule ExPokerEval.RankTest do
         [suit: "H", value: 9],
         [suit: "D", value: 12]
       ]
-      assert Rank.highest(cards) == {:high_card, 12}
+      assert Rank.highest(cards) == {8, :high_card, 12}
     end
   end
 end

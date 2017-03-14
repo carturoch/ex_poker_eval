@@ -36,7 +36,7 @@ defmodule ExPokerEval.Rank do
     Enum.find_value(ranks, {}, fn rank_name ->
       rank_func = "get_#{rank_name}" |> String.to_atom
       case apply(ExPokerEval.Rank, rank_func, [cards]) do
-        {rank_name, value} -> {rank_name, value}
+        {rank_name, value} -> {Enum.find_index(@order, &(&1 == rank_name)), rank_name, value}
         _ -> false
       end
     end)
